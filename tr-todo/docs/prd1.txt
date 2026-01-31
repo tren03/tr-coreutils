@@ -1,0 +1,144 @@
+# Requirements — Todo Application
+
+## 1. Purpose
+
+The system shall provide core functionality to manage todo items.
+The same core functionality must be consumable by multiple delivery mechanisms (e.g., CLI and HTTP API).
+
+---
+
+## 2. Functional Requirements
+
+### 2.1 Todo Item
+
+A todo item shall have:
+
+* A unique identifier
+* A title
+* A completion status
+* A creation timestamp
+
+---
+
+### 2.2 Create Todo
+
+* The system shall allow creating a new todo item.
+* The title shall be mandatory and non-empty.
+* On successful creation, the created todo shall be returned.
+* If input is invalid, the system shall return an error.
+
+---
+
+### 2.3 List Todos
+
+* The system shall allow retrieving all todo items.
+* The system shall support filtering todos by completion status:
+
+  * all
+  * completed
+  * pending
+* The system shall return an empty list if no todos exist.
+
+---
+
+### 2.4 Get Todo
+
+* The system shall allow retrieving a single todo by its identifier.
+* If the identifier does not exist, the system shall return an error.
+
+---
+
+### 2.5 Complete Todo
+
+* The system shall allow marking a todo as completed.
+* Completing an already completed todo shall not cause an error.
+* If the identifier does not exist, the system shall return an error.
+
+---
+
+### 2.6 Delete Todo
+
+* The system shall allow deleting a todo by its identifier.
+* If the identifier does not exist, the system shall return an error.
+
+---
+
+## 3. Data Persistence Requirements
+
+* The system shall persist todo items between executions.
+* The persistence mechanism shall be replaceable without changing core behavior.
+* The system shall support at least one local persistence mechanism.
+
+---
+
+## 4. Error Handling Requirements
+
+* The system shall distinguish between:
+
+  * Invalid input
+  * Resource not found
+  * Internal failure
+* Errors shall be returned in a structured form consumable by any delivery mechanism.
+
+---
+
+## 5. Delivery Requirements
+
+* The core functionality shall not depend on:
+
+  * Command-line parsing
+  * HTTP frameworks
+  * UI formatting
+* The same operations and behaviors shall be exposed through:
+
+  * A command-line interface
+  * An HTTP API
+
+---
+
+## 6. Behavioral Requirements
+
+* Operations shall be deterministic.
+* Repeating the same operation with the same inputs shall yield the same result.
+* Completing a todo shall be idempotent.
+
+---
+
+## 7. Non-Functional Requirements
+
+* The system shall start quickly.
+* The system shall not crash during normal operation.
+* The system shall be testable without external dependencies.
+* The system shall be implemented in Go.
+
+---
+
+## 8. Out of Scope
+
+* Authentication or authorization
+* Multiple users
+* Due dates, priorities, or tags
+* Notifications or reminders
+* Remote sync
+
+---
+
+## 9. Acceptance Criteria
+
+* All functional requirements can be exercised via both CLI and API.
+* Core behavior remains unchanged regardless of delivery mechanism.
+* Business rules are enforced consistently across all entry points.
+
+---
+
+| Concern    | Library          |
+| ---------- | ---------------- |
+| Migrations | `golang-migrate` |
+| DB access  | `sqlx` or `sqlc` |
+| Env config | `viper`          |
+| Web server | `net/http`       |
+| Router     | `chi`            |
+| CLI        | `cobra`          |
+| Logging    | `zap`            |
+
+

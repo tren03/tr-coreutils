@@ -1,0 +1,13 @@
+db:
+  host: ""
+  port: ""
+  user: ""
+  password: ""
+  name: ""
+  max_open: 25
+  max_idle: 5
+  max_con_lifetime: 0
+  ssl_mode: "disable"
+
+server:
+  port: ""
