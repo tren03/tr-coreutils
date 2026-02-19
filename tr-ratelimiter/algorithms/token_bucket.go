@@ -1,7 +1,5 @@
 package algorithms
 
-import "github.com/tren03/tr-coreutils/tr-ratelimiter/utils"
-
 /*
 Token bucket would take
 - refillRate // per minute
@@ -48,7 +46,7 @@ type TokenBucket struct {
 	TimeNow    func() int64
 }
 
-func NewTokenBucket(RefillRate int, BucketSize int, Repo ITokenBucketRepo, TimeNow func ()int64) *TokenBucket {
+func NewTokenBucket(RefillRate int, BucketSize int, Repo ITokenBucketRepo, TimeNow func() int64) *TokenBucket {
 	return &TokenBucket{
 		RefillRate: RefillRate,
 		BucketSize: BucketSize,
