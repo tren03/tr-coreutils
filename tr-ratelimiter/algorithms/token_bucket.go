@@ -48,7 +48,7 @@ type TokenBucket struct {
 
 func NewTokenBucket(RefillRate int, BucketSize int, Repo ITokenBucketRepo, TimeNow func() int64) *TokenBucket {
 	return &TokenBucket{
-		RefillRate: RefillRate,
+		RefillRate: RefillRate, // min
 		BucketSize: BucketSize,
 		Repo:       Repo,
 		TimeNow:    TimeNow,
