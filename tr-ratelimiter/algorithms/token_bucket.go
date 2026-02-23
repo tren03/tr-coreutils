@@ -80,8 +80,10 @@ func (t *TokenBucket) Execute(key string) AlgorithmResponse {
 	curTokenCount := min(int64(t.BucketSize), int64(state.curTokens)+tokensAdded-1) // remove one for current request, and calc tokens (cap to max bucket size)
 	if curTokenCount <= 0 {
 		// do not allow
-		// t.ITokenBucketRepo.Set(key, TokenBucketState{timestamp: t.timeNow(), curTokens: 0}) DO NOT UPDATE TIMESTAMP WHEN FALSE, TO NOT PUNISH USER
-		retryAfter := int64(60 / t.RefillRate) // time taken for 1 token to be generated
+		// retryAfter := int64(60 / t.RefillRate) // time taken for 1 token to be generated
+		// retryAfter := int64(60 / t.RefillRate) * int64(diff) // time taken for 1 token to be generated
+		// t.Repo.Set(key, TokenBucketState{timestamp: state.timestamp, curTokens: int(curTokenCount)}) // DO NOT UPDATE TIMESTAMP WHEN FALSE, TO NOT PUNISH USER
+		retryAfter := int64(60/t.RefillRate) * ((0 - curTokenCount) + 1)
 		return AlgorithmResponse{
 			Allow:      false,
 			RetryAfter: &retryAfter,

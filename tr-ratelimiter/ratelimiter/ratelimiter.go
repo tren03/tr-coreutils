@@ -42,17 +42,17 @@ type IRatelimiter interface {
 	Allow(key string) RatelimterResponse
 }
 
-type Ratelimter struct {
+type Ratelimiter struct {
 	alg algorithms.IAlgorithm
 }
 
-func NewRateLimiter(alg algorithms.IAlgorithm) *Ratelimter {
-	return &Ratelimter{
+func NewRateLimiter(alg algorithms.IAlgorithm) *Ratelimiter {
+	return &Ratelimiter{
 		alg: alg,
 	}
 }
 
-func (r *Ratelimter) Allow(key string) RatelimterResponse {
+func (r *Ratelimiter) Allow(key string) RatelimterResponse {
 	response := r.alg.Execute(key)
 
 	return RatelimterResponse{
