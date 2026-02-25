@@ -1,21 +1,25 @@
 package boot
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log/slog"
 
 	_ "github.com/lib/pq"
+	ih "github.com/tren03/tr-coreutils/tr-todo/internal/http"
 	"github.com/tren03/tr-coreutils/tr-todo/internal/todo"
 	"github.com/tren03/tr-coreutils/tr-todo/pkg/config"
 )
 
 type App struct {
+	Config   *config.Config
 	DB       *sql.DB
 	Logger   *slog.Logger
 	Repos    *Repos
 	Clients  *Clients
 	Services *Services
+	Server   *ih.Router
 }
 
 type Repos struct {
@@ -59,6 +63,24 @@ func WithDatabase(cfg config.DB) Option {
 		if app.Logger != nil {
 			app.Logger.Info("database connected and healthy")
 		}
+		return nil
+	}
+}
+
+func WithConfig(cfg *config.Config) Option {
+	return func(app *App) error {
+		app.Config = cfg
+		return nil
+	}
+}
+
+func WithHTTPServer() Option {
+	return func(app *App) error {
+		if app.Logger == nil {
+			return fmt.Errorf("logger must be initialized before HTTP server")
+		}
+		app.Server = ih.New(app.Logger)
+		app.Logger.Info("HTTP router initialized")
 		return nil
 	}
 }
@@ -140,11 +162,13 @@ func Initalize() (*App, error) {
 	}
 
 	app, err := helper(
+		WithConfig(cfg),
 		WithLogger("info"),
 		WithDatabase(*cfg.DB),
 		WithRepos(cfg),
 		WithClients(cfg),
 		WithServices(cfg),
+		WithHTTPServer(),
 	)
 
 	if err != nil {
@@ -153,12 +177,18 @@ func Initalize() (*App, error) {
 	return app, nil
 }
 
-func (app *App) Shutdown() error {
+func (app *App) Shutdown(ctx context.Context) error {
 	if app.Logger != nil {
 		app.Logger.Info("shutting down application")
 	}
 
 	var errs []error
+
+	if app.Server != nil {
+		if err := app.Server.Shutdown(ctx); err != nil {
+			errs = append(errs, fmt.Errorf("server shutdown failed: %w", err))
+		}
+	}
 
 	// Close database connection
 	if app.DB != nil {
@@ -170,11 +200,6 @@ func (app *App) Shutdown() error {
 	}
 
 	// Close any other resources (future clients, services, etc.)
-	// if app.Clients.Email != nil {
-	//     if err := app.Clients.Email.Close(); err != nil {
-	//         errs = append(errs, err)
-	//     }
-	// }
 
 	if len(errs) > 0 {
 		return fmt.Errorf("shutdown errors: %v", errs)

@@ -1,13 +1,13 @@
 db:
-  host: ""
-  port: ""
-  user: ""
-  password: ""
-  name: ""
+  host: localhost
+  port: 5432
+  user: postgres
+  password: password
+  name: todo
   max_open: 25
   max_idle: 5
   max_con_lifetime: 0
   ssl_mode: "disable"
 
 server:
-  port: ""
+  port: 8080
