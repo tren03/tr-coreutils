@@ -2,12 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 )
 
+const SERVER_PORT = 8000
+
 func main() {
-	fmt.Println("Hello world")
-	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "Hello world") })
-	log.Fatalln(http.ListenAndServe(":8000", nil))
+	fmt.Println("Starting")
 }

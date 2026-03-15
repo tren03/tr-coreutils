@@ -18,4 +18,3 @@ RUN apk update --no-cache && apk add --no-cache ca-certificates && rm -rf /var/c
 EXPOSE 8000
 
 CMD ["./myapp"]
-p
